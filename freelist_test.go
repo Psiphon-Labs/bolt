@@ -178,10 +178,7 @@ func TestFreelist_releaseRange(t *testing.T) {
 }
 
 func TestFreelistHashmap_allocate(t *testing.T) {
-	f := newTestFreelist()
-	if f.freelistType != FreelistMapType {
-		t.Skip()
-	}
+	f := newFreelist(FreelistMapType)
 
 	ids := []pgid{3, 4, 5, 6, 7, 9, 12, 13, 18}
 	f.readIDs(ids)
@@ -208,10 +205,7 @@ func TestFreelistHashmap_allocate(t *testing.T) {
 
 // Ensure that a freelist can find contiguous blocks of pages.
 func TestFreelistArray_allocate(t *testing.T) {
-	f := newTestFreelist()
-	if f.freelistType != FreelistArrayType {
-		t.Skip()
-	}
+	f := newFreelist(FreelistArrayType)
 	ids := []pgid{3, 4, 5, 6, 7, 9, 12, 13, 18}
 	f.readIDs(ids)
 	if id := int(f.allocate(1, 3)); id != 3 {
@@ -400,10 +394,7 @@ func Test_freelist_mergeWithExist(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		f := newTestFreelist()
-		if f.freelistType == FreelistArrayType {
-			t.Skip()
-		}
+		f := newFreelist(FreelistMapType)
 		f.readIDs(tt.ids)
 
 		f.mergeWithExistingSpan(tt.pgid)

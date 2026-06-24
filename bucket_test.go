@@ -386,7 +386,7 @@ func TestBucket_Delete_FreelistOverflow(t *testing.T) {
 		t.Skip("skipping test in short mode.")
 	}
 
-	db := MustOpenDB()
+	db := MustOpenWithOption(&bolt.Options{PageSize: 4096})
 	defer db.MustClose()
 
 	k := make([]byte, 16)
@@ -1185,7 +1185,7 @@ func TestBucket_Put_ValueTooLarge(t *testing.T) {
 
 // Ensure a bucket can calculate stats.
 func TestBucket_Stats(t *testing.T) {
-	db := MustOpenDB()
+	db := MustOpenWithOption(&bolt.Options{PageSize: 4096})
 	defer db.MustClose()
 
 	// Add bucket with fewer keys but one big value.
@@ -1274,11 +1274,9 @@ func TestBucket_Stats(t *testing.T) {
 func TestBucket_Stats_RandomFill(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping test in short mode.")
-	} else if os.Getpagesize() != 4096 {
-		t.Skip("invalid page size for test")
 	}
 
-	db := MustOpenDB()
+	db := MustOpenWithOption(&bolt.Options{PageSize: 4096})
 	defer db.MustClose()
 
 	// Add a set of values in random order. It will be the same random
@@ -1570,7 +1568,7 @@ func TestBucket_Stats_Large(t *testing.T) {
 		t.Skip("skipping test in short mode.")
 	}
 
-	db := MustOpenDB()
+	db := MustOpenWithOption(&bolt.Options{PageSize: 4096})
 	defer db.MustClose()
 
 	var index int

@@ -139,12 +139,8 @@ func TestOpen_ErrInvalid(t *testing.T) {
 
 // Ensure that opening a file with two invalid versions returns ErrVersionMismatch.
 func TestOpen_ErrVersionMismatch(t *testing.T) {
-	if pageSize != os.Getpagesize() {
-		t.Skip("page size mismatch")
-	}
-
 	// Create empty database.
-	db := MustOpenDB()
+	db := MustOpenWithOption(&bolt.Options{PageSize: pageSize})
 	path := db.Path()
 	defer db.MustClose()
 
@@ -169,19 +165,15 @@ func TestOpen_ErrVersionMismatch(t *testing.T) {
 	}
 
 	// Reopen data file.
-	if _, err := bolt.Open(path, 0666, nil); err != bolt.ErrVersionMismatch {
+	if _, err := bolt.Open(path, 0666, &bolt.Options{PageSize: pageSize}); err != bolt.ErrVersionMismatch {
 		t.Fatalf("unexpected error: %s", err)
 	}
 }
 
 // Ensure that opening a file with two invalid checksums returns ErrChecksum.
 func TestOpen_ErrChecksum(t *testing.T) {
-	if pageSize != os.Getpagesize() {
-		t.Skip("page size mismatch")
-	}
-
 	// Create empty database.
-	db := MustOpenDB()
+	db := MustOpenWithOption(&bolt.Options{PageSize: pageSize})
 	path := db.Path()
 	defer db.MustClose()
 
@@ -206,7 +198,7 @@ func TestOpen_ErrChecksum(t *testing.T) {
 	}
 
 	// Reopen data file.
-	if _, err := bolt.Open(path, 0666, nil); err != bolt.ErrChecksum {
+	if _, err := bolt.Open(path, 0666, &bolt.Options{PageSize: pageSize}); err != bolt.ErrChecksum {
 		t.Fatalf("unexpected error: %s", err)
 	}
 }
